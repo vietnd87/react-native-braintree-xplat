@@ -9,6 +9,8 @@ import com.google.gson.Gson;
 import android.content.Intent;
 import android.content.Context;
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
 
 import com.braintreepayments.api.ThreeDSecure;
 import com.braintreepayments.api.PaymentRequest;
@@ -34,6 +36,9 @@ import com.facebook.react.bridge.ReadableMap;
 
 public class Braintree extends ReactContextBaseJavaModule implements ActivityEventListener {
   private static final int PAYMENT_REQUEST = 1706816330;
+  
+  private static final String TAG_FRAGMENT = "com.braintreepayments.api.BraintreeFragment";
+
   private String token;
 
   private Callback successCallback;
@@ -61,6 +66,15 @@ public class Braintree extends ReactContextBaseJavaModule implements ActivityEve
 
   public void setToken(String token) {
     this.token = token;
+  }
+
+  @ReactMethod
+  public void resetToken() {
+    FragmentManager fm = getCurrentActivity().getFragmentManager();
+    BraintreeFragment braintreeFragment = (BraintreeFragment) fm.findFragmentByTag(TAG_FRAGMENT);
+    if (braintreeFragment != null) {
+      getCurrentActivity().getFragmentManager().beginTransaction().remove(braintreeFragment).commit();
+    }
   }
 
   @ReactMethod
